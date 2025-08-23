@@ -23,9 +23,12 @@ $posts = $db->query("SELECT id, title, content, created_at FROM posts ORDER BY c
 <article>
 <h2><?php echo htmlspecialchars($post['title']); ?></h2>
 <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
-<?php $utc = gmdate('c', strtotime($post['created_at'])); ?>
+<?php
+    $iso = gmdate('c', strtotime($post['created_at']));
+    $display = gmdate('j M Y g:i a', strtotime($post['created_at']));
+?>
 <small>
-    <time datetime="<?php echo $utc; ?>"><?php echo $utc; ?></time>
+    <time datetime="<?php echo $iso; ?>"><?php echo $display; ?></time>
     <?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?>
 </small>
 </article>
@@ -34,10 +37,20 @@ $posts = $db->query("SELECT id, title, content, created_at FROM posts ORDER BY c
 </body>
 <script>
 document.querySelectorAll('time[datetime]').forEach(el => {
-    const utcValue = el.getAttribute('datetime');
-    const date = new Date(utcValue);
+    const isoValue = el.getAttribute('datetime');
+    const date = new Date(isoValue);
     if (!isNaN(date)) {
-        el.textContent = date.toLocaleString();
+        const options = {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        };
+        el.textContent = date
+            .toLocaleString('en-GB', options)
+            .replace(',', '');
     }
 });
 </script>
