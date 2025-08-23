@@ -5,7 +5,22 @@ function get_db() {
         $db = new PDO('sqlite:' . __DIR__ . '/blog.db');
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL)");
-        $db->exec("CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+        $db->exec("CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            collection TEXT NOT NULL DEFAULT 'general',
+            slug TEXT NOT NULL DEFAULT '',
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )");
+        // Ensure collection and slug columns exist for older databases
+        $columns = $db->query("PRAGMA table_info(posts)")->fetchAll(PDO::FETCH_COLUMN, 1);
+        if (!in_array('collection', $columns)) {
+            $db->exec("ALTER TABLE posts ADD COLUMN collection TEXT NOT NULL DEFAULT 'general'");
+        }
+        if (!in_array('slug', $columns)) {
+            $db->exec("ALTER TABLE posts ADD COLUMN slug TEXT NOT NULL DEFAULT ''");
+        }
         $db->exec("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)");
         $stmt = $db->prepare("SELECT COUNT(*) AS count FROM settings WHERE key = 'blog_title'");
         $stmt->execute();
