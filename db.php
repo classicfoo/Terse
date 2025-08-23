@@ -6,6 +6,13 @@ function get_db() {
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL)");
         $db->exec("CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+        $db->exec("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)");
+        $stmt = $db->prepare("SELECT COUNT(*) AS count FROM settings WHERE key = 'blog_title'");
+        $stmt->execute();
+        if ($stmt->fetch(PDO::FETCH_ASSOC)['count'] == 0) {
+            $insert = $db->prepare("INSERT INTO settings (key, value) VALUES ('blog_title', 'Blog')");
+            $insert->execute();
+        }
         $stmt = $db->query("SELECT COUNT(*) as count FROM users");
         $count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
         if ($count == 0) {
@@ -16,5 +23,19 @@ function get_db() {
         }
     }
     return $db;
+}
+
+function get_blog_title() {
+    $db = get_db();
+    $stmt = $db->prepare("SELECT value FROM settings WHERE key = 'blog_title'");
+    $stmt->execute();
+    $title = $stmt->fetchColumn();
+    return $title !== false ? $title : 'Blog';
+}
+
+function set_blog_title($title) {
+    $db = get_db();
+    $stmt = $db->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('blog_title', ?)");
+    $stmt->execute([$title]);
 }
 ?>
