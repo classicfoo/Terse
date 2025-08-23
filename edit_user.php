@@ -8,6 +8,7 @@ $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_username = trim($_POST['username'] ?? '');
+
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -70,5 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <button type='submit'>Save</button>
 </form>
 <p><a href='index.php'>Back to posts</a></p>
+
 </body>
 </html>
