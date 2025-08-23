@@ -23,7 +23,7 @@ $posts = $db->query("SELECT id, title, content, created_at FROM posts ORDER BY c
 <article>
 <h2><?php echo htmlspecialchars($post['title']); ?></h2>
 <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
-<small><?php echo htmlspecialchars($post['created_at']); ?><?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a><?php endif; ?></small>
+<small><?php echo htmlspecialchars($post['created_at']); ?><?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?></small>
 </article>
 <hr>
 <?php endforeach; ?>
