@@ -23,9 +23,22 @@ $posts = $db->query("SELECT id, title, content, created_at FROM posts ORDER BY c
 <article>
 <h2><?php echo htmlspecialchars($post['title']); ?></h2>
 <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
-<small><?php echo htmlspecialchars($post['created_at']); ?><?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?></small>
+<?php $utc = gmdate('c', strtotime($post['created_at'])); ?>
+<small>
+    <time datetime="<?php echo $utc; ?>"><?php echo $utc; ?></time>
+    <?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?>
+</small>
 </article>
 <hr>
 <?php endforeach; ?>
 </body>
+<script>
+document.querySelectorAll('time[datetime]').forEach(el => {
+    const utcValue = el.getAttribute('datetime');
+    const date = new Date(utcValue);
+    if (!isNaN(date)) {
+        el.textContent = date.toLocaleString();
+    }
+});
+</script>
 </html>
