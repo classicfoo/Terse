@@ -15,6 +15,6 @@ This repository contains a simple blogging engine written in PHP with SQLite sto
    - **Username:** `admin`
    - **Password:** `password`
 4. Change the default username and password from the "Edit Account" link.
-5. Create new posts from the "New Post" link. Posts support basic Markdown syntax.
+5. Create new posts from the "New Post" link. Posts support basic Markdown syntax, including headings, emphasis, code, links, and lists (ordered and unordered).
 
 The database file `blog.db` will be created automatically in the project root.
