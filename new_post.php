@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="post">
 <label for="title">Title</label><br>
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
-<label for="content">Content</label><br>
+<label for="content">Content (Markdown supported)</label><br>
 <textarea name="content" id="content" rows="10" cols="50"><?php echo htmlspecialchars($content); ?></textarea><br>
 <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
 <button type="submit">Publish</button>

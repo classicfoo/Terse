@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/markdown.php';
 $db = get_db();
 $blog_title = get_blog_title();
 $id = (int)($_GET['id'] ?? 0);
@@ -30,7 +31,7 @@ if ($post['section_id']) {
 <h1><a href="index.php"><?php echo htmlspecialchars($blog_title); ?></a></h1>
 <article>
 <h2><?php echo htmlspecialchars($post['title']); ?></h2>
-<p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
+<?php echo render_markdown($post['content']); ?>
 <?php
     $iso = gmdate('c', strtotime($post['created_at']));
     $display = gmdate('j M Y g:i a', strtotime($post['created_at']));
