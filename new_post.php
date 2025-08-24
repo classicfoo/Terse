@@ -17,6 +17,7 @@ if ($section_id) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
+    $title = ucwords(strtolower($title));
     $content = trim($_POST['content'] ?? '');
     if ($title && $content) {
         $stmt = $db->prepare("INSERT INTO posts (title, content, section_id) VALUES (?, ?, ?)");
