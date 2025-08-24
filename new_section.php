@@ -17,6 +17,7 @@ $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
+    $title = ucwords(strtolower($title));
     if ($title) {
         $stmt = $db->prepare("INSERT INTO sections (title, parent_id) VALUES (?, ?)");
         $stmt->execute([$title, $parent_id ?: null]);

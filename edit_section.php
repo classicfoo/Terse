@@ -20,6 +20,7 @@ $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
+    $title = ucwords(strtolower($title));
     if ($title) {
         $update = $db->prepare("UPDATE sections SET title = ? WHERE id = ?");
         $update->execute([$title, $id]);

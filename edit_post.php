@@ -25,6 +25,7 @@ $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
+    $title = ucwords(strtolower($title));
     $content = trim($_POST['content'] ?? '');
     if ($title && $content) {
         $update = $db->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
