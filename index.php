@@ -3,7 +3,7 @@ require_once __DIR__ . '/auth.php';
 $db = get_db();
 $blog_title = get_blog_title();
 
-$posts = $db->query("SELECT id, title, content, created_at FROM posts ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+$posts = $db->query("SELECT id, title FROM posts ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,39 +19,10 @@ $posts = $db->query("SELECT id, title, content, created_at FROM posts ORDER BY c
 <?php else: ?>
 <p><a href="login.php">Login</a></p>
 <?php endif; ?>
+<ul>
 <?php foreach ($posts as $post): ?>
-<article>
-<h2><?php echo htmlspecialchars($post['title']); ?></h2>
-<p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
-<?php
-    $iso = gmdate('c', strtotime($post['created_at']));
-    $display = gmdate('j M Y g:i a', strtotime($post['created_at']));
-?>
-<small>
-    <time datetime="<?php echo $iso; ?>"><?php echo $display; ?></time>
-    <?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?>
-</small>
-</article>
-<hr>
+    <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
 <?php endforeach; ?>
+</ul>
 </body>
-<script>
-document.querySelectorAll('time[datetime]').forEach(el => {
-    const isoValue = el.getAttribute('datetime');
-    const date = new Date(isoValue);
-    if (!isNaN(date)) {
-        const options = {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        };
-        el.textContent = date
-            .toLocaleString('en-GB', options)
-            .replace(',', '');
-    }
-});
-</script>
 </html>
