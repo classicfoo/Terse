@@ -4,7 +4,7 @@ require_login();
 
 $db = get_db();
 $id = intval($_GET['id'] ?? 0);
-$stmt = $db->prepare("SELECT title, content FROM posts WHERE id = ?");
+$stmt = $db->prepare("SELECT title, content, section_id FROM posts WHERE id = ?");
 $stmt->execute([$id]);
 $post = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$post) {
@@ -14,6 +14,7 @@ if (!$post) {
 
 $title = $post['title'];
 $content = $post['content'];
+$section_id = (int)$post['section_id'];
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -22,7 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($title && $content) {
         $update = $db->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
         $update->execute([$title, $content, $id]);
-        header('Location: index.php');
+        if ($section_id) {
+            header('Location: view_section.php?id=' . $section_id);
+        } else {
+            header('Location: index.php');
+        }
         exit();
     } else {
         $message = 'Title and content are required';
@@ -48,6 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <textarea name="content" id="content" rows="10" cols="50"><?php echo htmlspecialchars($content); ?></textarea><br>
 <button type="submit">Update</button>
 </form>
-<p><a href="index.php">Back to posts</a></p>
+<p><a href="<?php echo $section_id ? 'view_section.php?id=' . $section_id : 'index.php'; ?>">Back</a></p>
 </body>
 </html>
