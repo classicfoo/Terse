@@ -37,7 +37,7 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 <?php if ($subsections): ?>
 <ul>
 <?php foreach ($subsections as $sub): ?>
-    <li><a href="view_section.php?id=<?php echo $sub['id']; ?>"><?php echo htmlspecialchars($sub['title']); ?></a><?php if (is_logged_in()): ?> - <a href="edit_section.php?id=<?php echo $sub['id']; ?>">Edit</a> | <a href="delete_section.php?id=<?php echo $sub['id']; ?>" onclick="return confirm('Delete this section?');">Delete</a><?php endif; ?></li>
+    <li><a href="view_section.php?id=<?php echo $sub['id']; ?>"><?php echo htmlspecialchars($sub['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
 <?php endif; ?>

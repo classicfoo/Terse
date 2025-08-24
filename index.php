@@ -23,7 +23,7 @@ $posts = $db->query("SELECT id, title FROM posts WHERE section_id IS NULL ORDER 
 <?php endif; ?>
 <ul>
 <?php foreach ($sections as $section): ?>
-    <li><a href="view_section.php?id=<?php echo $section['id']; ?>"><?php echo htmlspecialchars($section['title']); ?></a><?php if (is_logged_in()): ?> - <a href="edit_section.php?id=<?php echo $section['id']; ?>">Edit</a> | <a href="delete_section.php?id=<?php echo $section['id']; ?>" onclick="return confirm('Delete this section?');">Delete</a><?php endif; ?></li>
+    <li><a href="view_section.php?id=<?php echo $section['id']; ?>"><?php echo htmlspecialchars($section['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
 <ul>
