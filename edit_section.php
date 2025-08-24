@@ -46,6 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
 <button type="submit">Update</button>
 </form>
-<p><a href="view_section.php?id=<?php echo $id; ?>">Back</a></p>
+<p><a href="view_section.php?id=<?php echo $id; ?>">Back to <?php echo htmlspecialchars($title); ?></a></p>
 </body>
 </html>

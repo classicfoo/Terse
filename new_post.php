@@ -2,16 +2,23 @@
 require_once __DIR__ . '/auth.php';
 require_login();
 
+$db = get_db();
 $title = '';
 $content = '';
 $message = '';
 $section_id = isset($_GET['section_id']) ? intval($_GET['section_id']) : intval($_POST['section_id'] ?? 0);
 
+$section = null;
+if ($section_id) {
+    $stmt = $db->prepare("SELECT title FROM sections WHERE id = ?");
+    $stmt->execute([$section_id]);
+    $section = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
     if ($title && $content) {
-        $db = get_db();
         $stmt = $db->prepare("INSERT INTO posts (title, content, section_id) VALUES (?, ?, ?)");
         $stmt->execute([$title, $content, $section_id ?: null]);
         if ($section_id) {
@@ -45,6 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
 <button type="submit">Publish</button>
 </form>
-<p><a href="<?php echo $section_id ? 'view_section.php?id=' . $section_id : 'index.php'; ?>">Back</a></p>
+<?php if ($section): ?>
+<p><a href="view_section.php?id=<?php echo $section_id; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>
+<?php else: ?>
+<p><a href="index.php">Back to index</a></p>
+<?php endif; ?>
 </body>
 </html>

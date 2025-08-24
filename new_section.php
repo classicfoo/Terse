@@ -6,6 +6,12 @@ $db = get_db();
 $blog_title = get_blog_title();
 
 $parent_id = isset($_GET['parent_id']) ? intval($_GET['parent_id']) : intval($_POST['parent_id'] ?? 0);
+$parent = null;
+if ($parent_id) {
+    $stmt = $db->prepare("SELECT id, title FROM sections WHERE id = ?");
+    $stmt->execute([$parent_id]);
+    $parent = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 $title = '';
 $message = '';
 
@@ -42,6 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($parent_id); ?>">
 <button type="submit">Create</button>
 </form>
-<p><a href="<?php echo $parent_id ? 'view_section.php?id=' . $parent_id : 'index.php'; ?>">Back</a></p>
+<?php if ($parent): ?>
+<p><a href="view_section.php?id=<?php echo $parent['id']; ?>">Back to <?php echo htmlspecialchars($parent['title']); ?></a></p>
+<?php else: ?>
+<p><a href="index.php">Back to index</a></p>
+<?php endif; ?>
 </body>
 </html>
