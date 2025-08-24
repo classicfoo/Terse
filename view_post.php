@@ -44,7 +44,7 @@ if ($post['section_id']) {
 <?php if ($section): ?>
 <p><a href="view_section.php?id=<?php echo $section['id']; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>
 <?php else: ?>
-<p><a href="index.php">Back to posts</a></p>
+<p><a href="index.php">Back to Index</a></p>
 <?php endif; ?>
 <script>
 document.querySelectorAll('time[datetime]').forEach(el => {

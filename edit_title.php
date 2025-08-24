@@ -33,6 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
 <button type="submit">Save</button>
 </form>
-<p><a href="index.php">Back to posts</a></p>
+<p><a href="index.php">Back to Index</a></p>
 </body>
 </html>
