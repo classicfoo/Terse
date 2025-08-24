@@ -3,7 +3,7 @@ require_once __DIR__ . '/auth.php';
 $db = get_db();
 $blog_title = get_blog_title();
 $id = (int)($_GET['id'] ?? 0);
-$stmt = $db->prepare("SELECT id, title, content, created_at FROM posts WHERE id = ?");
+$stmt = $db->prepare("SELECT id, title, content, created_at, section_id FROM posts WHERE id = ?");
 $stmt->execute([$id]);
 $post = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$post) {
@@ -33,7 +33,11 @@ if (!$post) {
     <?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?>
 </small>
 </article>
+<?php if ($post['section_id']): ?>
+<p><a href="view_section.php?id=<?php echo $post['section_id']; ?>">Back to section</a> | <a href="index.php">Back to index</a></p>
+<?php else: ?>
 <p><a href="index.php">Back to posts</a></p>
+<?php endif; ?>
 <script>
 document.querySelectorAll('time[datetime]').forEach(el => {
     const isoValue = el.getAttribute('datetime');

@@ -5,15 +5,20 @@ require_login();
 $title = '';
 $content = '';
 $message = '';
+$section_id = isset($_GET['section_id']) ? intval($_GET['section_id']) : intval($_POST['section_id'] ?? 0);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
     if ($title && $content) {
         $db = get_db();
-        $stmt = $db->prepare("INSERT INTO posts (title, content) VALUES (?, ?)");
-        $stmt->execute([$title, $content]);
-        header('Location: index.php');
+        $stmt = $db->prepare("INSERT INTO posts (title, content, section_id) VALUES (?, ?, ?)");
+        $stmt->execute([$title, $content, $section_id ?: null]);
+        if ($section_id) {
+            header('Location: view_section.php?id=' . $section_id);
+        } else {
+            header('Location: index.php');
+        }
         exit();
     } else {
         $message = 'Title and content are required';
@@ -37,8 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
 <label for="content">Content</label><br>
 <textarea name="content" id="content" rows="10" cols="50"><?php echo htmlspecialchars($content); ?></textarea><br>
+<input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
 <button type="submit">Publish</button>
 </form>
-<p><a href="index.php">Back to posts</a></p>
+<p><a href="<?php echo $section_id ? 'view_section.php?id=' . $section_id : 'index.php'; ?>">Back</a></p>
 </body>
 </html>
