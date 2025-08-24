@@ -29,11 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($title && $content) {
         $update = $db->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
         $update->execute([$title, $content, $id]);
-        if ($section_id) {
-            header('Location: view_section.php?id=' . $section_id);
-        } else {
-            header('Location: index.php');
-        }
+        header('Location: view_post.php?id=' . $id);
         exit();
     } else {
         $message = 'Title and content are required';
