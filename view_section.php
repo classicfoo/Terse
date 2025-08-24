@@ -13,6 +13,13 @@ if (!$section) {
     exit();
 }
 
+$parent = null;
+if ($section['parent_id']) {
+    $parentStmt = $db->prepare("SELECT id, title FROM sections WHERE id = ?");
+    $parentStmt->execute([$section['parent_id']]);
+    $parent = $parentStmt->fetch(PDO::FETCH_ASSOC);
+}
+
 $subStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id = ? ORDER BY title");
 $subStmt->execute([$id]);
 $subsections = $subStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,8 +53,8 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
     <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
-<?php if ($section['parent_id']): ?>
-<p><a href="view_section.php?id=<?php echo $section['parent_id']; ?>">Back to parent</a> | <a href="index.php">Back to index</a></p>
+<?php if ($parent): ?>
+<p><a href="view_section.php?id=<?php echo $parent['id']; ?>">Back to <?php echo htmlspecialchars($parent['title']); ?></a></p>
 <?php else: ?>
 <p><a href="index.php">Back to index</a></p>
 <?php endif; ?>

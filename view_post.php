@@ -11,6 +11,13 @@ if (!$post) {
     echo "<p>Post not found.</p>\n";
     exit();
 }
+
+$section = null;
+if ($post['section_id']) {
+    $secStmt = $db->prepare("SELECT id, title FROM sections WHERE id = ?");
+    $secStmt->execute([$post['section_id']]);
+    $section = $secStmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,8 +40,8 @@ if (!$post) {
     <?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?>
 </small>
 </article>
-<?php if ($post['section_id']): ?>
-<p><a href="view_section.php?id=<?php echo $post['section_id']; ?>">Back to section</a> | <a href="index.php">Back to index</a></p>
+<?php if ($section): ?>
+<p><a href="view_section.php?id=<?php echo $section['id']; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>
 <?php else: ?>
 <p><a href="index.php">Back to posts</a></p>
 <?php endif; ?>

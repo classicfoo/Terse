@@ -15,6 +15,12 @@ if (!$post) {
 $title = $post['title'];
 $content = $post['content'];
 $section_id = (int)$post['section_id'];
+$section = null;
+if ($section_id) {
+    $secStmt = $db->prepare("SELECT title FROM sections WHERE id = ?");
+    $secStmt->execute([$section_id]);
+    $section = $secStmt->fetch(PDO::FETCH_ASSOC);
+}
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -53,6 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <textarea name="content" id="content" rows="10" cols="50"><?php echo htmlspecialchars($content); ?></textarea><br>
 <button type="submit">Update</button>
 </form>
-<p><a href="<?php echo $section_id ? 'view_section.php?id=' . $section_id : 'index.php'; ?>">Back</a></p>
+<?php if ($section): ?>
+<p><a href="view_section.php?id=<?php echo $section_id; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>
+<?php else: ?>
+<p><a href="index.php">Back to index</a></p>
+<?php endif; ?>
 </body>
 </html>
