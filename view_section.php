@@ -24,7 +24,11 @@ $subStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id = ? ORDE
 $subStmt->execute([$id]);
 $subsections = $subStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$postStmt = $db->prepare("SELECT id, title FROM posts WHERE section_id = ? ORDER BY created_at DESC");
+$postStmt = $db->prepare(
+    is_logged_in()
+        ? "SELECT id, title FROM posts WHERE section_id = ? ORDER BY created_at DESC"
+        : "SELECT id, title FROM posts WHERE section_id = ? AND is_public = 1 ORDER BY created_at DESC"
+);
 $postStmt->execute([$id]);
 $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
