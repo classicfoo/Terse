@@ -6,6 +6,7 @@ $db = get_db();
 $title = '';
 $content = '';
 $message = '';
+$is_public = 1;
 $section_id = isset($_GET['section_id']) ? intval($_GET['section_id']) : intval($_POST['section_id'] ?? 0);
 
 $section = null;
@@ -19,9 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $title = ucwords(strtolower($title));
     $content = trim($_POST['content'] ?? '');
+    $is_public = ($_POST['visibility'] ?? 'public') === 'public' ? 1 : 0;
     if ($title && $content) {
-        $stmt = $db->prepare("INSERT INTO posts (title, content, section_id) VALUES (?, ?, ?)");
-        $stmt->execute([$title, $content, $section_id ?: null]);
+        $stmt = $db->prepare("INSERT INTO posts (title, content, section_id, is_public) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$title, $content, $section_id ?: null, $is_public]);
         if ($section_id) {
             header('Location: view_section.php?id=' . $section_id);
         } else {
@@ -50,6 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
 <label for="content">Content (Markdown supported)</label><br>
 <textarea name="content" id="content" rows="10" cols="50"><?php echo htmlspecialchars($content); ?></textarea><br>
+<fieldset>
+<legend>Visibility</legend>
+<label><input type="radio" name="visibility" value="public" <?php echo $is_public ? 'checked' : ''; ?>> Public</label><br>
+<label><input type="radio" name="visibility" value="private" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
+</fieldset>
 <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
 <button type="submit">Publish</button>
 </form>

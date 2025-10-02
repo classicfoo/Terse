@@ -24,8 +24,13 @@ $subStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id = ? ORDE
 $subStmt->execute([$id]);
 $subsections = $subStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$postStmt = $db->prepare("SELECT id, title FROM posts WHERE section_id = ? ORDER BY created_at DESC");
-$postStmt->execute([$id]);
+if (is_logged_in()) {
+    $postStmt = $db->prepare("SELECT id, title, is_public FROM posts WHERE section_id = ? ORDER BY created_at DESC");
+    $postStmt->execute([$id]);
+} else {
+    $postStmt = $db->prepare("SELECT id, title, is_public FROM posts WHERE section_id = ? AND is_public = 1 ORDER BY created_at DESC");
+    $postStmt->execute([$id]);
+}
 $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -50,7 +55,12 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 <?php endif; ?>
 <ul>
 <?php foreach ($posts as $post): ?>
-    <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
+    <li>
+        <a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a>
+        <?php if (is_logged_in() && !$post['is_public']): ?>
+            <em>(Private)</em>
+        <?php endif; ?>
+    </li>
 <?php endforeach; ?>
 </ul>
 <?php if ($parent): ?>

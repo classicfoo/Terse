@@ -4,7 +4,13 @@ $db = get_db();
 $blog_title = get_blog_title();
 
 $sections = $db->query("SELECT id, title FROM sections WHERE parent_id IS NULL ORDER BY title")->fetchAll(PDO::FETCH_ASSOC);
-$posts = $db->query("SELECT id, title FROM posts WHERE section_id IS NULL ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+if (is_logged_in()) {
+    $postsStmt = $db->query("SELECT id, title, is_public FROM posts WHERE section_id IS NULL ORDER BY created_at DESC");
+} else {
+    $postsStmt = $db->prepare("SELECT id, title, is_public FROM posts WHERE section_id IS NULL AND is_public = 1 ORDER BY created_at DESC");
+    $postsStmt->execute();
+}
+$posts = $postsStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,7 +34,12 @@ $posts = $db->query("SELECT id, title FROM posts WHERE section_id IS NULL ORDER 
 </ul>
 <ul>
 <?php foreach ($posts as $post): ?>
-    <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
+    <li>
+        <a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a>
+        <?php if (is_logged_in() && !$post['is_public']): ?>
+            <em>(Private)</em>
+        <?php endif; ?>
+    </li>
 <?php endforeach; ?>
 </ul>
 </body>
