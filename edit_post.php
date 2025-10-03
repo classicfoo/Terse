@@ -4,7 +4,7 @@ require_login();
 
 $db = get_db();
 $id = intval($_GET['id'] ?? 0);
-$stmt = $db->prepare("SELECT title, content, section_id FROM posts WHERE id = ?");
+$stmt = $db->prepare("SELECT title, content, section_id, is_public FROM posts WHERE id = ?");
 $stmt->execute([$id]);
 $post = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$post) {
@@ -15,6 +15,7 @@ if (!$post) {
 $title = $post['title'];
 $content = $post['content'];
 $section_id = (int)$post['section_id'];
+$is_public = (int)$post['is_public'] === 1 ? 1 : 0;
 $section = null;
 if ($section_id) {
     $secStmt = $db->prepare("SELECT title FROM sections WHERE id = ?");
@@ -27,9 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $title = ucwords(strtolower($title));
     $content = trim($_POST['content'] ?? '');
+    $is_public = isset($_POST['is_public']) && $_POST['is_public'] === '0' ? 0 : 1;
     if ($title && $content) {
-        $update = $db->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
-        $update->execute([$title, $content, $id]);
+        $update = $db->prepare("UPDATE posts SET title = ?, content = ?, is_public = ? WHERE id = ?");
+        $update->execute([$title, $content, $is_public, $id]);
         header('Location: view_post.php?id=' . $id);
         exit();
     } else {
@@ -62,6 +64,11 @@ input[type="text"],
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
 <label for="content">Content (Markdown supported)</label><br>
 <textarea name="content" id="content" class="editor-field" rows="10"><?php echo htmlspecialchars($content); ?></textarea><br>
+<fieldset>
+<legend>Visibility</legend>
+<label><input type="radio" name="is_public" value="1" <?php echo $is_public ? 'checked' : ''; ?>> Public</label><br>
+<label><input type="radio" name="is_public" value="0" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
+</fieldset>
 <button type="submit">Update</button>
 </form>
 <?php if ($section): ?>

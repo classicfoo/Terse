@@ -4,10 +4,10 @@ require_once __DIR__ . '/markdown.php';
 $db = get_db();
 $blog_title = get_blog_title();
 $id = (int)($_GET['id'] ?? 0);
-$stmt = $db->prepare("SELECT id, title, content, created_at, section_id FROM posts WHERE id = ?");
+$stmt = $db->prepare("SELECT id, title, content, created_at, section_id, is_public FROM posts WHERE id = ?");
 $stmt->execute([$id]);
 $post = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$post) {
+if (!$post || (!$post['is_public'] && !is_logged_in())) {
     http_response_code(404);
     echo "<p>Post not found.</p>\n";
     exit();
@@ -38,6 +38,7 @@ if ($post['section_id']) {
 ?>
 <small>
     <time datetime="<?php echo $iso; ?>"><?php echo $display; ?></time>
+    <?php if (!$post['is_public']): ?> | Private<?php endif; ?>
     <?php if (is_logged_in()): ?> | <a href="edit_post.php?id=<?php echo $post['id']; ?>">Edit</a> | <a href="delete_post.php?id=<?php echo $post['id']; ?>" onclick="return confirm('Delete this post?');">Delete</a><?php endif; ?>
 </small>
 </article>
