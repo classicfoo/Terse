@@ -17,7 +17,7 @@ $posts = $db->query("SELECT id, title FROM posts WHERE section_id IS NULL ORDER 
 <h1><?php echo htmlspecialchars($blog_title); ?></h1>
 <h2>Index</h2>
 <?php if (is_logged_in()): ?>
-<p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?> | <a href="new_section.php">New Section</a> | <a href="new_post.php">New Post</a> | <a href="edit_title.php">Edit Title</a> | <a href="edit_user.php">Edit Account</a> | <a href="logout.php">Logout</a></p>
+<p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?> | <a href="new_section.php">New Section</a> | <a href="new_post.php">New Post</a> | <a href="edit_title.php">Edit Title</a> | <a href="edit_user.php">Settings</a> | <a href="logout.php">Logout</a></p>
 <?php else: ?>
 <p><a href="login.php">Login</a></p>
 <?php endif; ?>
