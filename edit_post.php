@@ -43,6 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Post</title>
+<style>
+input[type="text"],
+.editor-field {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+</style>
 </head>
 <body>
 <h1>Edit Post</h1>
@@ -53,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <label for="title">Title</label><br>
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
 <label for="content">Content (Markdown supported)</label><br>
-<textarea name="content" id="content" rows="10" cols="50"><?php echo htmlspecialchars($content); ?></textarea><br>
+<textarea name="content" id="content" class="editor-field" rows="10"><?php echo htmlspecialchars($content); ?></textarea><br>
 <button type="submit">Update</button>
 </form>
 <?php if ($section): ?>
