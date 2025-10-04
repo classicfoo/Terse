@@ -29,11 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = ucwords(strtolower($title));
     $content = trim($_POST['content'] ?? '');
     $is_public = isset($_POST['is_public']) && $_POST['is_public'] === '0' ? 0 : 1;
+    $action = $_POST['action'] ?? 'post';
     if ($title && $content) {
         $update = $db->prepare("UPDATE posts SET title = ?, content = ?, is_public = ? WHERE id = ?");
         $update->execute([$title, $content, $is_public, $id]);
-        header('Location: view_post.php?id=' . $id);
-        exit();
+        if ($action === 'save') {
+            $message = 'Post saved.';
+        } else {
+            header('Location: view_post.php?id=' . $id);
+            exit();
+        }
     } else {
         $message = 'Title and content are required';
     }
@@ -69,7 +74,8 @@ input[type="text"],
 <label><input type="radio" name="is_public" value="1" <?php echo $is_public ? 'checked' : ''; ?>> Public</label><br>
 <label><input type="radio" name="is_public" value="0" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
 </fieldset>
-<button type="submit">Update</button>
+<button type="submit" name="action" value="post">Post</button>
+<button type="submit" name="action" value="save">Save</button>
 </form>
 <?php if ($section): ?>
 <p><a href="view_section.php?id=<?php echo $section_id; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>
