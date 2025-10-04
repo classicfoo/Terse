@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/auth.php';
 
+$autoloadPath = __DIR__ . '/vendor/autoload.php';
+if (file_exists($autoloadPath)) {
+    require_once $autoloadPath;
+}
+
 if (is_logged_in()) {
     header('Location: index.php');
     exit();
@@ -33,14 +38,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $resetLink . "\n\n" .
             "If you did not request this, you can ignore this message.";
         $fromAddress = sprintf('no-reply@%s', $host);
-        $headers = sprintf("From: %s\r\nReply-To: %s", $fromAddress, $fromAddress);
+        $mailSent = false;
+        $deliveryError = '';
 
-        $mailSent = mail($email, $subject, $body, $headers);
+        $phpMailerClass = '\\PHPMailer\\PHPMailer\\PHPMailer';
+        if (class_exists($phpMailerClass)) {
+            $mailer = new $phpMailerClass(true);
+            try {
+                $mailer->isSMTP();
+
+                $smtpHost = getenv('SMTP_HOST') ?: '';
+                if ($smtpHost === '') {
+                    throw new RuntimeException('SMTP_HOST is not configured.');
+                }
+
+                $mailer->Host = $smtpHost;
+                $mailer->Port = (int) (getenv('SMTP_PORT') ?: 587);
+
+                $encryption = strtolower((string) getenv('SMTP_ENCRYPTION'));
+                if ($encryption === 'ssl') {
+                    $mailer->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+                } elseif ($encryption === 'none') {
+                    $mailer->SMTPSecure = false;
+                    $mailer->SMTPAutoTLS = false;
+                } else {
+                    $mailer->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                }
+
+                $smtpUsername = getenv('SMTP_USERNAME');
+                if ($smtpUsername !== false && $smtpUsername !== '') {
+                    $mailer->SMTPAuth = true;
+                    $mailer->Username = $smtpUsername;
+                    $mailer->Password = (string) getenv('SMTP_PASSWORD');
+                } else {
+                    $mailer->SMTPAuth = false;
+                }
+
+                $mailer->CharSet = 'UTF-8';
+                $mailer->setFrom($fromAddress, 'Terse');
+                $mailer->addReplyTo($fromAddress, 'Terse Support');
+                $mailer->addAddress($email);
+                $mailer->Subject = $subject;
+                $mailer->Body = $body;
+                $mailer->AltBody = $body;
+                $mailer->isHTML(false);
+
+                $mailSent = $mailer->send();
+            } catch (\PHPMailer\PHPMailer\Exception $mailerException) {
+                $deliveryError = $mailerException->getMessage();
+            } catch (\Throwable $mailerException) {
+                $deliveryError = $mailerException->getMessage();
+            }
+
+            if ($deliveryError !== '') {
+                error_log('Password reset email error: ' . $deliveryError);
+            }
+        } else {
+            $headers = sprintf("From: %s\r\nReply-To: %s", $fromAddress, $fromAddress);
+            $mailSent = mail($email, $subject, $body, $headers);
+            if (!$mailSent) {
+                $deliveryError = 'mail() transport failed; install PHPMailer and configure SMTP settings.';
+                error_log('Password reset email error: ' . $deliveryError);
+            }
+        }
+
         if ($mailSent) {
             $message = 'If an account matches the provided details, a reset message has been sent.';
             $showForm = false;
         } else {
             $error = 'Email delivery failed. Please try again or contact support to provide assistance.';
+            if ($deliveryError !== '') {
+                error_log('Password reset email delivery failure details: ' . $deliveryError);
+            }
             error_log(sprintf('Password reset token for %s: %s', $email, $token));
         }
     }
