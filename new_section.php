@@ -13,14 +13,16 @@ if ($parent_id) {
     $parent = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 $title = '';
+$template = '';
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $title = ucwords(strtolower($title));
+    $template = $_POST['template'] ?? '';
     if ($title) {
-        $stmt = $db->prepare("INSERT INTO sections (title, parent_id) VALUES (?, ?)");
-        $stmt->execute([$title, $parent_id ?: null]);
+        $stmt = $db->prepare("INSERT INTO sections (title, parent_id, template) VALUES (?, ?, ?)");
+        $stmt->execute([$title, $parent_id ?: null, $template]);
         if ($parent_id) {
             header('Location: view_section.php?id=' . $parent_id);
         } else {
@@ -46,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="post">
 <label for="title">Title</label><br>
 <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
+<label for="template">Template</label><br>
+<textarea name="template" id="template" rows="8" cols="60"><?php echo htmlspecialchars($template); ?></textarea><br>
 <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($parent_id); ?>">
 <button type="submit">Create</button>
 </form>

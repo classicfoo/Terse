@@ -11,9 +11,13 @@ $is_public = isset($_POST['is_public']) ? (int)($_POST['is_public'] === '1') : 1
 
 $section = null;
 if ($section_id) {
-    $stmt = $db->prepare("SELECT title FROM sections WHERE id = ?");
+    $stmt = $db->prepare("SELECT title, template FROM sections WHERE id = ?");
     $stmt->execute([$section_id]);
     $section = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+if ($section && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $content = $section['template'] ?? '';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
