@@ -94,10 +94,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log('Password reset email error: ' . $deliveryError);
             }
         } else {
-            $headers = sprintf("From: %s\r\nReply-To: %s", $fromAddress, $fromAddress);
-            $mailSent = mail($email, $subject, $body, $headers);
-            if (!$mailSent) {
-                $deliveryError = 'mail() transport failed; install PHPMailer and configure SMTP settings.';
+            $fallbackSmtpHost = getenv('MAIL_SMTP_HOST');
+            if ($fallbackSmtpHost !== false && $fallbackSmtpHost !== '') {
+                ini_set('SMTP', $fallbackSmtpHost);
+            }
+
+            $fallbackSmtpPort = getenv('MAIL_SMTP_PORT');
+            if ($fallbackSmtpPort !== false && $fallbackSmtpPort !== '') {
+                ini_set('smtp_port', (string) $fallbackSmtpPort);
+            }
+
+            $configuredHost = trim((string) ini_get('SMTP'));
+            $configuredPort = trim((string) ini_get('smtp_port'));
+            $isWindows = stripos(PHP_OS, 'WIN') === 0;
+
+            $canUseMail = true;
+            if ($isWindows) {
+                $lowerHost = strtolower($configuredHost);
+                if ($lowerHost === '' || $lowerHost === 'localhost' || $lowerHost === '127.0.0.1') {
+                    $canUseMail = false;
+                }
+            }
+
+            if ($canUseMail) {
+                $headers = sprintf("From: %s\r\nReply-To: %s", $fromAddress, $fromAddress);
+                $mailSent = mail($email, $subject, $body, $headers);
+                if (!$mailSent) {
+                    $deliveryError = sprintf(
+                        'mail() transport failed for %s:%s; install PHPMailer and configure SMTP settings.',
+                        $configuredHost !== '' ? $configuredHost : 'unknown-host',
+                        $configuredPort !== '' ? $configuredPort : 'unknown-port'
+                    );
+                    error_log('Password reset email error: ' . $deliveryError);
+                }
+            } else {
+                $deliveryError = 'mail() transport is not configured. Install PHPMailer via Composer and supply SMTP_* environment variables.';
                 error_log('Password reset email error: ' . $deliveryError);
             }
         }
