@@ -54,7 +54,7 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 </ul>
 <?php endif; ?>
 <?php if (!empty($posts)): ?>
-<h3>Headings</h3>
+<h3>Posts</h3>
 <ul>
 <?php foreach ($posts as $post): ?>
     <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
