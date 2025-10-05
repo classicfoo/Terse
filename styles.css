@@ -7,24 +7,31 @@ input[type="number"],
 input[type="tel"],
 textarea,
 select {
+    display: block;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 textarea {
     resize: vertical;
 }
 
+label {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
 button,
 input[type="submit"],
 input[type="reset"],
 input[type="button"] {
+    display: inline-block;
     margin-right: 0.5rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 fieldset {
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
