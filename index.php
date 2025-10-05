@@ -28,15 +28,21 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 <?php else: ?>
 <p><a href="login.php">Login</a></p>
 <?php endif; ?>
+<?php if (!empty($sections)): ?>
+<h3>Sections</h3>
 <ul>
 <?php foreach ($sections as $section): ?>
     <li><a href="view_section.php?id=<?php echo $section['id']; ?>"><?php echo htmlspecialchars($section['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
+<?php endif; ?>
+<?php if (!empty($posts)): ?>
+<h3>Headings</h3>
 <ul>
 <?php foreach ($posts as $post): ?>
     <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
+<?php endif; ?>
 </body>
 </html>
