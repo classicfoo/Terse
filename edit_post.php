@@ -50,14 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Post</title>
-<style>
-input[type="text"],
-.editor-field {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1>Edit Post</h1>
