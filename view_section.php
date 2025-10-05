@@ -45,18 +45,22 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 <?php if (is_logged_in()): ?>
 <p><a href="new_section.php?parent_id=<?php echo $section['id']; ?>">New Subsection</a> | <a href="new_post.php?section_id=<?php echo $section['id']; ?>">New Post</a> | <a href="edit_section.php?id=<?php echo $section['id']; ?>">Edit Section</a> | <a href="delete_section.php?id=<?php echo $section['id']; ?>" onclick="return confirm('Delete this section?');">Delete Section</a></p>
 <?php endif; ?>
-<?php if ($subsections): ?>
+<?php if (!empty($subsections)): ?>
+<h3>Sections</h3>
 <ul>
 <?php foreach ($subsections as $sub): ?>
     <li><a href="view_section.php?id=<?php echo $sub['id']; ?>"><?php echo htmlspecialchars($sub['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
 <?php endif; ?>
+<?php if (!empty($posts)): ?>
+<h3>Posts</h3>
 <ul>
 <?php foreach ($posts as $post): ?>
     <li><a href="view_post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></li>
 <?php endforeach; ?>
 </ul>
+<?php endif; ?>
 <?php if ($parent): ?>
 <p><a href="view_section.php?id=<?php echo $parent['id']; ?>">Back to <?php echo htmlspecialchars($parent['title']); ?></a></p>
 <?php else: ?>
