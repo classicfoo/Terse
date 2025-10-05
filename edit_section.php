@@ -39,6 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Section</title>
+<style>
+input[type="text"],
+textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+</style>
 </head>
 <body>
 <h1><a href="index.php"><?php echo htmlspecialchars($blog_title); ?></a></h1>
