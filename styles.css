@@ -11,7 +11,7 @@ select {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 textarea {
@@ -20,7 +20,7 @@ textarea {
 
 label {
     display: block;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
 }
 
 button,
@@ -29,9 +29,9 @@ input[type="reset"],
 input[type="button"] {
     display: inline-block;
     margin-right: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 fieldset {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
