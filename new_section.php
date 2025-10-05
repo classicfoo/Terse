@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>New Section</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1><a href="index.php"><?php echo htmlspecialchars($blog_title); ?></a></h1>

@@ -1,0 +1,30 @@
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+textarea,
+select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0.75rem;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+    margin-right: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+fieldset {
+    margin-bottom: 0.75rem;
+}

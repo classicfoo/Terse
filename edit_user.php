@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>Edit Account</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1>Edit Account</h1>
