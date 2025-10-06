@@ -53,17 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <p><?php echo htmlspecialchars($message); ?></p>
 <?php endif; ?>
 <form method="post">
-<label for="title">Title</label><br>
-<input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
-<label for="content">Content (Markdown supported)</label><br>
-<textarea name="content" id="content" class="editor-field" rows="10"><?php echo htmlspecialchars($content); ?></textarea><br>
-<input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
-<fieldset>
-<legend>Visibility</legend>
-<label><input type="radio" name="is_public" value="1" <?php echo $is_public ? 'checked' : ''; ?>> Public</label><br>
-<label><input type="radio" name="is_public" value="0" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
-</fieldset>
-<button type="submit">Publish</button>
+    <div class="form-field">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>">
+    </div>
+    <div class="form-field">
+        <label for="content">Content (Markdown supported)</label>
+        <textarea name="content" id="content" class="editor-field" rows="10"><?php echo htmlspecialchars($content); ?></textarea>
+    </div>
+    <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
+    <fieldset>
+        <legend>Visibility</legend>
+        <label><input type="radio" name="is_public" value="1" <?php echo $is_public ? 'checked' : ''; ?>> Public</label>
+        <label><input type="radio" name="is_public" value="0" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
+    </fieldset>
+    <button type="submit">Publish</button>
 </form>
 <?php if ($section): ?>
 <p><a href="view_section.php?id=<?php echo $section_id; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>

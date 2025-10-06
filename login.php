@@ -32,11 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <p><?php echo htmlspecialchars($message); ?></p>
 <?php endif; ?>
 <form method="post">
-<label for="username">Username</label><br>
-<input type="text" name="username" id="username"><br>
-<label for="password">Password</label><br>
-<input type="password" name="password" id="password"><br>
-<button type="submit">Login</button>
+    <div class="form-field">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username">
+    </div>
+    <div class="form-field">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password">
+    </div>
+    <button type="submit">Login</button>
 </form>
 </body>
 </html>
