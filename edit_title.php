@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Title</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1>Edit Title</h1>
@@ -29,9 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <p><?php echo htmlspecialchars($message); ?></p>
 <?php endif; ?>
 <form method="post">
-<label for="title">Title</label><br>
-<input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
-<button type="submit">Save</button>
+    <div class="form-field">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>">
+    </div>
+    <button type="submit">Save</button>
 </form>
 <p><a href="index.php">Back to Index</a></p>
 </body>

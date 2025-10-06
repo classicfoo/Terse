@@ -40,18 +40,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>New Section</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1><a href="index.php"><?php echo htmlspecialchars($blog_title); ?></a></h1>
 <h2>New Section</h2>
 <?php if ($message): ?><p><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
 <form method="post">
-<label for="title">Title</label><br>
-<input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
-<label for="template">Template</label><br>
-<textarea name="template" id="template" rows="8" cols="60"><?php echo htmlspecialchars($template); ?></textarea><br>
-<input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($parent_id); ?>">
-<button type="submit">Create</button>
+    <div class="form-field">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>">
+    </div>
+    <div class="form-field">
+        <label for="template">Template</label>
+        <textarea name="template" id="template" rows="8" cols="60"><?php echo htmlspecialchars($template); ?></textarea>
+    </div>
+    <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($parent_id); ?>">
+    <button type="submit">Create</button>
 </form>
 <?php if ($parent): ?>
 <p><a href="view_section.php?id=<?php echo $parent['id']; ?>">Back to <?php echo htmlspecialchars($parent['title']); ?></a></p>

@@ -55,22 +55,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>Edit Account</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1>Edit Account</h1>
 <?php if ($message): ?>
 <p><?php echo htmlspecialchars($message); ?></p>
 <?php endif; ?>
-<form method='post'>
-<label for='username'>Username</label><br>
-<input type='text' name='username' id='username' value='<?php echo htmlspecialchars($current_username); ?>'><br>
-<label for='new_password'>New Password</label><br>
-<input type='password' name='new_password' id='new_password'><br>
-<label for='confirm_password'>Confirm New Password</label><br>
-<input type='password' name='confirm_password' id='confirm_password'><br>
-<button type='submit'>Save</button>
+<form method="post">
+    <div class="form-field">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($current_username); ?>">
+    </div>
+    <div class="form-field">
+        <label for="new_password">New Password</label>
+        <input type="password" name="new_password" id="new_password">
+    </div>
+    <div class="form-field">
+        <label for="confirm_password">Confirm New Password</label>
+        <input type="password" name="confirm_password" id="confirm_password">
+    </div>
+    <button type="submit">Save</button>
 </form>
-<p><a href='index.php'>Back to Index</a></p>
+<p><a href="index.php">Back to Index</a></p>
 
 </body>
 </html>

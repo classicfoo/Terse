@@ -39,25 +39,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Section</title>
-<style>
-input[type="text"],
-textarea {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1><a href="index.php"><?php echo htmlspecialchars($blog_title); ?></a></h1>
 <h2>Edit Section</h2>
 <?php if ($message): ?><p><?php echo htmlspecialchars($message); ?></p><?php endif; ?>
 <form method="post">
-<label for="title">Title</label><br>
-<input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
-<label for="template">Template</label><br>
-<textarea name="template" id="template" rows="8" cols="60"><?php echo htmlspecialchars($template); ?></textarea><br>
-<button type="submit">Update</button>
+    <div class="form-field">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>">
+    </div>
+    <div class="form-field">
+        <label for="template">Template</label>
+        <textarea name="template" id="template" rows="8" cols="60"><?php echo htmlspecialchars($template); ?></textarea>
+    </div>
+    <button type="submit">Update</button>
 </form>
 <p><a href="view_section.php?id=<?php echo $id; ?>">Back to <?php echo htmlspecialchars($title); ?></a></p>
 </body>

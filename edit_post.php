@@ -50,14 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edit Post</title>
-<style>
-input[type="text"],
-.editor-field {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <h1>Edit Post</h1>
@@ -65,17 +58,23 @@ input[type="text"],
 <p><?php echo htmlspecialchars($message); ?></p>
 <?php endif; ?>
 <form method="post">
-<label for="title">Title</label><br>
-<input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>"><br>
-<label for="content">Content (Markdown supported)</label><br>
-<textarea name="content" id="content" class="editor-field" rows="10"><?php echo htmlspecialchars($content); ?></textarea><br>
-<fieldset>
-<legend>Visibility</legend>
-<label><input type="radio" name="is_public" value="1" <?php echo $is_public ? 'checked' : ''; ?>> Public</label><br>
-<label><input type="radio" name="is_public" value="0" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
-</fieldset>
-<button type="submit" name="action" value="post">Post</button>
-<button type="submit" name="action" value="save">Save</button>
+    <div class="form-field">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($title); ?>">
+    </div>
+    <div class="form-field">
+        <label for="content">Content (Markdown supported)</label>
+        <textarea name="content" id="content" class="editor-field" rows="10"><?php echo htmlspecialchars($content); ?></textarea>
+    </div>
+    <fieldset>
+        <legend>Visibility</legend>
+        <label><input type="radio" name="is_public" value="1" <?php echo $is_public ? 'checked' : ''; ?>> Public</label>
+        <label><input type="radio" name="is_public" value="0" <?php echo !$is_public ? 'checked' : ''; ?>> Private</label>
+    </fieldset>
+    <div class="form-actions">
+        <button type="submit" name="action" value="post">Post</button>
+        <button type="submit" name="action" value="save">Save</button>
+    </div>
 </form>
 <?php if ($section): ?>
 <p><a href="view_section.php?id=<?php echo $section_id; ?>">Back to <?php echo htmlspecialchars($section['title']); ?></a></p>
