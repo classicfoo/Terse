@@ -2,12 +2,14 @@
 require_once __DIR__ . '/auth.php';
 require_login();
 
-$default_visibility = get_default_post_visibility();
+$default_post_visibility = get_default_post_visibility();
+$default_section_visibility = get_default_section_visibility();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $selected = $_POST['default_visibility'] ?? 'public';
-    $is_public = $selected === 'public';
-    set_default_post_visibility($is_public);
+    $post_visibility = $_POST['default_post_visibility'] ?? 'public';
+    $section_visibility = $_POST['default_section_visibility'] ?? 'public';
+    set_default_post_visibility($post_visibility === 'public');
+    set_default_section_visibility($section_visibility === 'public');
     header('Location: index.php');
     exit();
 }
@@ -26,11 +28,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <fieldset>
         <legend>Default Post Visibility</legend>
         <label>
-            <input type="radio" name="default_visibility" value="public" <?php echo $default_visibility ? 'checked' : ''; ?>>
+            <input type="radio" name="default_post_visibility" value="public" <?php echo $default_post_visibility ? 'checked' : ''; ?>>
             Public
         </label>
         <label>
-            <input type="radio" name="default_visibility" value="private" <?php echo !$default_visibility ? 'checked' : ''; ?>>
+            <input type="radio" name="default_post_visibility" value="private" <?php echo !$default_post_visibility ? 'checked' : ''; ?>>
+            Private
+        </label>
+    </fieldset>
+    <fieldset>
+        <legend>Default Section Visibility</legend>
+        <label>
+            <input type="radio" name="default_section_visibility" value="public" <?php echo $default_section_visibility ? 'checked' : ''; ?>>
+            Public
+        </label>
+        <label>
+            <input type="radio" name="default_section_visibility" value="private" <?php echo !$default_section_visibility ? 'checked' : ''; ?>>
             Private
         </label>
     </fieldset>

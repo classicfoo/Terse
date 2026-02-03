@@ -14,15 +14,18 @@ if ($parent_id) {
 }
 $title = '';
 $template = '';
+$is_public = get_default_section_visibility();
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $title = ucwords(strtolower($title));
     $template = $_POST['template'] ?? '';
+    $visibility = $_POST['visibility'] ?? ($is_public ? 'public' : 'private');
+    $is_public = $visibility === 'public' ? 1 : 0;
     if ($title) {
-        $stmt = $db->prepare("INSERT INTO sections (title, parent_id, template) VALUES (?, ?, ?)");
-        $stmt->execute([$title, $parent_id ?: null, $template]);
+        $stmt = $db->prepare("INSERT INTO sections (title, parent_id, template, is_public) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$title, $parent_id ?: null, $template, $is_public]);
         if ($parent_id) {
             header('Location: view_section.php?id=' . $parent_id);
         } else {
@@ -55,6 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="template">Template</label>
         <textarea name="template" id="template" rows="8" cols="60"><?php echo htmlspecialchars($template); ?></textarea>
     </div>
+    <fieldset>
+        <legend>Visibility</legend>
+        <label>
+            <input type="radio" name="visibility" value="public" <?php echo $is_public ? 'checked' : ''; ?>>
+            Public
+        </label>
+        <label>
+            <input type="radio" name="visibility" value="private" <?php echo !$is_public ? 'checked' : ''; ?>>
+            Private
+        </label>
+    </fieldset>
     <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($parent_id); ?>">
     <button type="submit">Create</button>
 </form>

@@ -4,7 +4,7 @@ $db = get_db();
 $blog_title = get_blog_title();
 
 $id = intval($_GET['id'] ?? 0);
-$stmt = $db->prepare("SELECT id, title, parent_id FROM sections WHERE id = ?");
+$stmt = $db->prepare("SELECT id, title, parent_id, is_public FROM sections WHERE id = ?");
 $stmt->execute([$id]);
 $section = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$section) {
@@ -12,15 +12,29 @@ if (!$section) {
     echo "<p>Section not found.</p>\n";
     exit();
 }
+if (!is_logged_in() && !(int)$section['is_public']) {
+    http_response_code(404);
+    echo "<p>Section not found.</p>\n";
+    exit();
+}
 
 $parent = null;
 if ($section['parent_id']) {
-    $parentStmt = $db->prepare("SELECT id, title FROM sections WHERE id = ?");
-    $parentStmt->execute([$section['parent_id']]);
+    if (is_logged_in()) {
+        $parentStmt = $db->prepare("SELECT id, title FROM sections WHERE id = ?");
+        $parentStmt->execute([$section['parent_id']]);
+    } else {
+        $parentStmt = $db->prepare("SELECT id, title FROM sections WHERE id = ? AND is_public = 1");
+        $parentStmt->execute([$section['parent_id']]);
+    }
     $parent = $parentStmt->fetch(PDO::FETCH_ASSOC);
 }
 
-$subStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id = ? ORDER BY title");
+if (is_logged_in()) {
+    $subStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id = ? ORDER BY title");
+} else {
+    $subStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id = ? AND is_public = 1 ORDER BY title");
+}
 $subStmt->execute([$id]);
 $subsections = $subStmt->fetchAll(PDO::FETCH_ASSOC);
 
