@@ -44,7 +44,7 @@ $posts = $postStmt->fetchAll(PDO::FETCH_ASSOC);
 <h1><a href="index.php"><?php echo htmlspecialchars($blog_title); ?></a></h1>
 <h2><?php echo htmlspecialchars($section['title']); ?></h2>
 <?php if (is_logged_in()): ?>
-<p><a href="new_section.php?parent_id=<?php echo $section['id']; ?>">New Subsection</a> | <a href="new_post.php?section_id=<?php echo $section['id']; ?>">New Post</a> | <a href="edit_section.php?id=<?php echo $section['id']; ?>">Edit Section</a> | <a href="delete_section.php?id=<?php echo $section['id']; ?>" onclick="return confirm('Delete this section?');">Delete Section</a></p>
+<p><a href="new_section.php?parent_id=<?php echo $section['id']; ?>">New Subsection</a> | <a href="new_post.php?section_id=<?php echo $section['id']; ?>">New Post</a> | <a href="settings.php">Settings</a> | <a href="edit_section.php?id=<?php echo $section['id']; ?>">Edit Section</a> | <a href="delete_section.php?id=<?php echo $section['id']; ?>" onclick="return confirm('Delete this section?');">Delete Section</a></p>
 <?php endif; ?>
 <?php if (!empty($subsections)): ?>
 <h3>Sections</h3>

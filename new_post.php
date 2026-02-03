@@ -7,7 +7,9 @@ $title = '';
 $content = '';
 $message = '';
 $section_id = isset($_GET['section_id']) ? intval($_GET['section_id']) : intval($_POST['section_id'] ?? 0);
-$is_public = isset($_POST['is_public']) ? (int)($_POST['is_public'] === '1') : 1;
+$is_public = isset($_POST['is_public'])
+    ? (int)($_POST['is_public'] === '1')
+    : get_default_post_visibility();
 
 $section = null;
 if ($section_id) {
