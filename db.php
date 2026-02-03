@@ -6,7 +6,7 @@ function get_db() {
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL)");
         $db->exec("CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, section_id INTEGER, is_public INTEGER NOT NULL DEFAULT 1)");
-        $db->exec("CREATE TABLE IF NOT EXISTS sections (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, parent_id INTEGER REFERENCES sections(id), template TEXT DEFAULT '')");
+        $db->exec("CREATE TABLE IF NOT EXISTS sections (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, parent_id INTEGER REFERENCES sections(id), template TEXT DEFAULT '', is_public INTEGER NOT NULL DEFAULT 1)");
         $db->exec("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)");
 
         // Ensure the section_id column exists for older installations
@@ -22,6 +22,9 @@ function get_db() {
         if (!in_array('template', $sectionColumns)) {
             $db->exec("ALTER TABLE sections ADD COLUMN template TEXT DEFAULT ''");
         }
+        if (!in_array('is_public', $sectionColumns)) {
+            $db->exec("ALTER TABLE sections ADD COLUMN is_public INTEGER NOT NULL DEFAULT 1");
+        }
         $stmt = $db->prepare("SELECT COUNT(*) AS count FROM settings WHERE key = 'blog_title'");
         $stmt->execute();
         if ($stmt->fetch(PDO::FETCH_ASSOC)['count'] == 0) {
@@ -32,6 +35,12 @@ function get_db() {
         $stmt->execute();
         if ($stmt->fetch(PDO::FETCH_ASSOC)['count'] == 0) {
             $insert = $db->prepare("INSERT INTO settings (key, value) VALUES ('default_post_visibility', 'public')");
+            $insert->execute();
+        }
+        $stmt = $db->prepare("SELECT COUNT(*) AS count FROM settings WHERE key = 'default_section_visibility'");
+        $stmt->execute();
+        if ($stmt->fetch(PDO::FETCH_ASSOC)['count'] == 0) {
+            $insert = $db->prepare("INSERT INTO settings (key, value) VALUES ('default_section_visibility', 'public')");
             $insert->execute();
         }
         $stmt = $db->query("SELECT COUNT(*) as count FROM users");
@@ -75,6 +84,24 @@ function set_default_post_visibility($is_public) {
     $db = get_db();
     $value = $is_public ? 'public' : 'private';
     $stmt = $db->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('default_post_visibility', ?)");
+    $stmt->execute([$value]);
+}
+
+function get_default_section_visibility() {
+    $db = get_db();
+    $stmt = $db->prepare("SELECT value FROM settings WHERE key = 'default_section_visibility'");
+    $stmt->execute();
+    $value = $stmt->fetchColumn();
+    if ($value === false) {
+        return 1;
+    }
+    return $value === 'private' ? 0 : 1;
+}
+
+function set_default_section_visibility($is_public) {
+    $db = get_db();
+    $value = $is_public ? 'public' : 'private';
+    $stmt = $db->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('default_section_visibility', ?)");
     $stmt->execute([$value]);
 }
 ?>

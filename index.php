@@ -3,7 +3,13 @@ require_once __DIR__ . '/auth.php';
 $db = get_db();
 $blog_title = get_blog_title();
 
-$sections = $db->query("SELECT id, title FROM sections WHERE parent_id IS NULL ORDER BY title")->fetchAll(PDO::FETCH_ASSOC);
+if (is_logged_in()) {
+    $sections = $db->query("SELECT id, title FROM sections WHERE parent_id IS NULL ORDER BY title")->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $sectionStmt = $db->prepare("SELECT id, title FROM sections WHERE parent_id IS NULL AND is_public = 1 ORDER BY title");
+    $sectionStmt->execute();
+    $sections = $sectionStmt->fetchAll(PDO::FETCH_ASSOC);
+}
 if (is_logged_in()) {
     $postStmt = $db->prepare("SELECT id, title FROM posts WHERE section_id IS NULL ORDER BY created_at DESC");
     $postStmt->execute();
