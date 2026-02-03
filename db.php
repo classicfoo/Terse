@@ -28,6 +28,12 @@ function get_db() {
             $insert = $db->prepare("INSERT INTO settings (key, value) VALUES ('blog_title', 'Blog')");
             $insert->execute();
         }
+        $stmt = $db->prepare("SELECT COUNT(*) AS count FROM settings WHERE key = 'default_post_visibility'");
+        $stmt->execute();
+        if ($stmt->fetch(PDO::FETCH_ASSOC)['count'] == 0) {
+            $insert = $db->prepare("INSERT INTO settings (key, value) VALUES ('default_post_visibility', 'public')");
+            $insert->execute();
+        }
         $stmt = $db->query("SELECT COUNT(*) as count FROM users");
         $count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
         if ($count == 0) {
@@ -52,5 +58,23 @@ function set_blog_title($title) {
     $db = get_db();
     $stmt = $db->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('blog_title', ?)");
     $stmt->execute([$title]);
+}
+
+function get_default_post_visibility() {
+    $db = get_db();
+    $stmt = $db->prepare("SELECT value FROM settings WHERE key = 'default_post_visibility'");
+    $stmt->execute();
+    $value = $stmt->fetchColumn();
+    if ($value === false) {
+        return 1;
+    }
+    return $value === 'private' ? 0 : 1;
+}
+
+function set_default_post_visibility($is_public) {
+    $db = get_db();
+    $value = $is_public ? 'public' : 'private';
+    $stmt = $db->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('default_post_visibility', ?)");
+    $stmt->execute([$value]);
 }
 ?>
